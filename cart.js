@@ -4,24 +4,33 @@ const cart = [
   { name: "Headphones", price: 200 }
 ];
 
-function calculateTotal(cartItems) {
+function calculateTotal(cartItems) {  //Used breakpoints in the debugger to examine each function 
   let total = 0;
-  for (let i = 0; i <= cartItems.length; i++) { // Bug: <= should be <
-      total += cartItems[i].price; // Bug: cartItems[i] is undefined on the last iteration
+  for (let i = 0; i < cartItems.length; i++) { // Changed <= to <
+      total += cart[i].price; // Changed cartItems[i] to cart
   }
   return total;
 }
 
+
 function applyDiscount(total, discountRate) {
-  return total - total * discountRate; // Bug: Missing validation for discountRate
+  if (!isNaN(discountRate) && discountRate >= 0 && discountRate <= 1) {
+  return total - total * discountRate; // Added validation for discountRate
+}else{
+  throw new Error("Discount rate must be a number between 0 and 1.");
+}
+
 }
 
 function generateReceipt(cartItems, total) {
+  if (isNaN(total)) {
+    throw new Error("Total must be a number.");
+  }
   let receipt = "Items:\n";
   cartItems.forEach(item => {
       receipt += `${item.name}: $${item.price}\n`;
   });
-  receipt += `Total: $${total.toFixed(2)}`; // Bug: total may not be a number
+  receipt += `Total: $${total.toFixed(2)}`; // Added a conditional to check if total is a number
   return receipt;
 }
 
@@ -31,5 +40,8 @@ const total = calculateTotal(cart);
 const discountedTotal = applyDiscount(total, 0.2); // 20% discount
 const receipt = generateReceipt(cart, discountedTotal);
 
-document.getElementById("total").textContent = `Total: $${discountedTotal}`;
-document.getElementById("receipt").textContent = receipt;
+let totalElement = document.getElementById("total").textContent = `Total: $${discountedTotal}`;
+let receiptElement = document.getElementById("receipt").textContent = receipt;
+
+console.log(totalElement);
+console.log(receiptElement);
